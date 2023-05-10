@@ -7,6 +7,9 @@ from gensim.models import FastText
 
 def generate_combinations(word, max_output):
     # Get all possible permutations of the word's letters
+    if(len(word)>10):
+        print(word + "is greater than 10")
+        return [word]
     permutations = list(itertools.permutations(word))
     # Create a set to store unique combinations
     combinations = set()
