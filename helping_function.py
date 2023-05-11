@@ -4,11 +4,12 @@ from nltk.corpus import stopwords
 from tqdm import tqdm
 import itertools
 from gensim.models import FastText
+from spellchecker import SpellChecker
 
 def generate_combinations(word, max_output):
     # Get all possible permutations of the word's letters
     if(len(word)>10):
-        print(word + "is greater than 10")
+        #print(word + " is greater than 10")
         return [word]
     permutations = list(itertools.permutations(word))
     # Create a set to store unique combinations
@@ -61,3 +62,34 @@ def find_correct_word(input_word, word_list, model,topn = 5):
     else:
         print("Could not find a similar word in words_list.")
         return None, similar_words
+    
+    from spellchecker import SpellChecker
+
+def correct_sentence(sentence, word_list , model):
+    # Initialize spellchecker
+    spell = SpellChecker()
+
+    # Tokenize sentence into words
+    words = sentence.split()
+
+    # Find misspelled words
+    misspelled = spell.unknown(words)
+
+    # Create a list to store corrected words
+    corrected = []
+
+    # Loop through misspelled words and get correct spelling using find_correct_word
+    for word in words:
+        if word in misspelled:
+            correct_word, _ = find_correct_word(word, word_list, model)
+            if correct_word:
+                corrected.append(correct_word)
+            else:
+                corrected.append(word)
+        else:
+            corrected.append(word)
+
+    # Join corrected words into a sentence
+    corrected_sentence = ' '.join(corrected)
+
+    return corrected_sentence
